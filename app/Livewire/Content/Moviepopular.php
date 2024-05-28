@@ -6,14 +6,9 @@ use Livewire\Component;
 
 class Moviepopular extends Component
 {
-    public $movies;
+    public $movie;
 
-    public function mount($movies) {
-        $this->movies = $movies;
-    }
-
-    public function render()
-    {
-        return view('livewire.content.moviepopular');
+    public function mount($movie) {
+        $this->movie = $movie;
     }
 }

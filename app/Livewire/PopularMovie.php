@@ -9,32 +9,37 @@ use App\Libraries\Moviedb;
 #[Title('Popular Movie')]
 class PopularMovie extends Component
 {
-    public $movies;
-    public $page;
+    public $movies = [];
+    public $page = 1;
     
-    public function mount() {
-        $arr = [];
-        for ($i=0; $i <13 ; $i++) { 
-            # code...
-            $arr[$i] = [
-                'id' => $i+1,
-                'name' => 'Product ' . $i+1,
-                'price' => '$' . random_int(1,1000),
-                'image' => 'https://via.placeholder.com/150'
-            ];
+    public function prev() {
+        if ($this->page > 1) {
+            $this->page--;
+            $params = ['language' => 'en-Us', 'page' => $this->page];
+            $this->loadMovies($params);
         }
-
-        $response = $this->getPopularMovies();
-        $this->movies = $response ? $response['results'] : [];
-        $this->page = $response ? $response['page'] : 1;
-        // dd($this->movies);
-        // $arr = json_decode(json_encode($arr));
-        // $this->movies = (object) $arr;
     }
 
-    private function getPopularMovies() {
+    public function next() {
+        $this->page++;
+        $params = ['language' => 'en-Us', 'page' => $this->page];
+        $this->loadMovies($params);
+    }
+
+    public function mount() {
+        $params = ['language' => 'en-Us', 'page' => $this->page];
+        $this->loadMovies($params);
+    }
+
+    public function loadMovies($params) {
+        $response = $this->getPopularMovies($params);
+        $this->movies = $response ? $response['results'] : [];
+        $this->page = $response ? $response['page'] : 1;
+    }
+
+    private function getPopularMovies($params) {
         $moviedb = new Moviedb;
-        $res = $moviedb->getPopularMovies(['language' => 'en-Us', 'page' => 1]);
+        $res = $moviedb->getPopularMovies($params);
         return $res;
     }
 
